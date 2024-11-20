@@ -27,7 +27,7 @@ flipped_to_world_coord: true
 random_sample_pose: true
 mimic_plane: false # minimize the error with EG3D plane
 
-pretrained_eg3d_ckpt: /mnt/bn/sa-ag-data/yezhenhui/projects/GeneFace_private/checkpoints/geneface2_ckpts/eg3d_baseline_run2/model_ckpt_steps_100000.ckpt
+pretrained_eg3d_ckpt: /home/tw554/Real3DPortrait/checkpoints/pretrained_ckpts/eg3d_baseline_run2/model_ckpt_steps_100000.ckpt
 seg_out_mode: none
 img2plane_backbone_mode: vit
 num_ckpt_keep: 1

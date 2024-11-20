@@ -57,29 +57,35 @@ def load_file(name):
 face_landmarker = None
     
 def extract_landmark_job(video_name, nerf=False):
-    try:
-        if nerf:
-            out_name = video_name.replace("/raw/", "/processed/").replace(".mp4","/lms_2d.npy")
-        else:
-            out_name = video_name.replace("/video/", "/lms_2d/").replace(".mp4","_lms.npy")
-        if os.path.exists(out_name):
-            # print("out exists, skip...")
-            return
-        try:
-            os.makedirs(os.path.dirname(out_name), exist_ok=True)
-        except:
-            pass
-        global face_landmarker
-        if face_landmarker is None:
-            face_landmarker = MediapipeLandmarker()
-        img_lm478, vid_lm478 = face_landmarker.extract_lm478_from_video_name(video_name)
-        lm478 = face_landmarker.combine_vid_img_lm478_to_lm478(img_lm478, vid_lm478)
-        np.save(out_name, lm478)
-        return True
-        # print("Hahaha, solve one item!!!")
-    except Exception as e:
-        traceback.print_exc()
-        return False
+    # try:
+    if nerf:
+        out_name = video_name.replace("/raw/", "/processed/").replace(".mp4","/lms_2d.npy")
+    else:
+        out_name = video_name.replace("/video/", "/lms_2d/").replace(".mp4","_lms.npy")
+
+    os.makedirs(os.path.dirname(out_name), exist_ok=True)
+    
+    # if os.path.exists(out_name):
+    #     # print("out exists, skip...")
+    #     return
+    # try:
+    #     os.makedirs(os.path.dirname(out_name), exist_ok=True)
+    # except:
+    #     pass
+    global face_landmarker
+    if face_landmarker is None:
+        face_landmarker = MediapipeLandmarker()
+
+
+    # import pdb; pdb.set_trace()
+    img_lm478, vid_lm478 = face_landmarker.extract_lm478_from_video_name(video_name)
+    lm478 = face_landmarker.combine_vid_img_lm478_to_lm478(img_lm478, vid_lm478)
+    np.save(out_name, lm478)
+    return True
+    # print("Hahaha, solve one item!!!")
+    # except Exception as e:
+    #     traceback.print_exc()
+    #     return False
         
 def out_exist_job(vid_name):
     out_name = vid_name.replace("/video/", "/lms_2d/").replace(".mp4","_lms.npy") 
@@ -156,9 +162,10 @@ if __name__ == '__main__':
 
     fail_cnt = 0
     job_args = [(vid_name, ds_name=='nerf') for vid_name in vid_names]
-    for (i, res) in multiprocess_run_tqdm(extract_landmark_job, job_args, num_workers=args.num_workers, desc=f"Root {args.process_id}: extracing MP-based landmark2d"): 
-        if res is False:
-            fail_cnt += 1
-        print(f"finished {i + 1} / {len(vid_names)} = {(i + 1) / len(vid_names):.4f}, failed {fail_cnt} / {i + 1} = {fail_cnt / (i + 1):.4f}")
-        sys.stdout.flush()
-        pass
+    extract_landmark_job(*job_args[0])
+    # for (i, res) in multiprocess_run_tqdm(extract_landmark_job, job_args, num_workers=args.num_workers, desc=f"Root {args.process_id}: extracing MP-based landmark2d"): 
+    #     if res is False:
+    #         fail_cnt += 1
+    #     print(f"finished {i + 1} / {len(vid_names)} = {(i + 1) / len(vid_names):.4f}, failed {fail_cnt} / {i + 1} = {fail_cnt / (i + 1):.4f}")
+    #     sys.stdout.flush()
+    #     pass
