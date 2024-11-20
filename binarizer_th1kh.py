@@ -63,8 +63,20 @@ if __name__ == '__main__':
             #     if i % 100 != 0:
             #         continue
 
-            if prefix not in mp4_name:
-                continue
+
+            # import pdb; pdb.set_trace()
+
+            # if prefix not in mp4_name:
+            #     continue
+
+            if prefix == 'train':
+                if not mp4_name.endswith("train.mp4"):
+                    continue
+            else:
+                if not mp4_name.endswith("test.mp4"):
+                    continue
+
+
                 
             hubert_npy_name = mp4_name.replace("/video/", "/hubert/").replace(".mp4", "_hubert.npy")
             audio_npy_name = mp4_name.replace("/video/", "/mel_f0/").replace(".mp4", "_mel_f0.npy")
